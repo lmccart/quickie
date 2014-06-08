@@ -9,10 +9,8 @@ PFont ralewayF, titilliumF;
 String awardType;
 
 // styling
-float sc; // scaler, grid is 1920x1080 
-color[] genderC = { 
-  color(0, 255, 255), color(102, 255, 0)
-};
+float sc; // scaler, design grid is 1920x1080
+color[] genderC = { color(0, 255, 255), color(102, 255, 0) }; // cyan, green
 color gridC = color(255, 61, 255);
 float textY;
 float subtextY;
@@ -46,7 +44,8 @@ void setup() {
   clip = new Movie(this, path+"clip.mp4");
   clip.loop();
   data = loadTable(path+"data.csv", "header");
-  awardText = loadStrings("award.txt")[0];
+  awardType = loadStrings(path+"award.txt")[0];
+  awardType = awardType.substring(0,1).toUpperCase() + awardType.substring(1);
 
   // load svgs
   menSVG = loadShape("Icon_Men.svg");
@@ -73,11 +72,14 @@ void draw() {
 
 
 
+
+/**
+ * DRAW PARTS
+ **/
+ 
 void drawBars() {
 
-  String[] emotions = {
-    "Positive", "Negative", "Surprise"
-  };
+  String[] emotions = { "Positive", "Negative", "Surprise" };
 
   noStroke();
   float x = 1065.0*sc;
@@ -88,6 +90,7 @@ void drawBars() {
     float textX = x+85.0*sc;
     float totalV = 0;
 
+    // emotion label
     setupText(CENTER);
     text(emotions[i], textX, textY);
 
@@ -113,6 +116,7 @@ void drawGraph() {
   strokeWeight(2.5);
   noFill();
 
+  // label
   float x0 = 245.0*sc;
   setupText(LEFT);
   text("Engagement", x0, textY);
@@ -136,14 +140,16 @@ void drawGraph() {
     // draw little circle
     float cX = x0 + clip.time()*totalW/data.getRowCount();
     float cY = height - y0 - maxH*getLerpVal(getCol(j, "Engagement"));
-    ellipse(cX, cY, 10, 10);
+    ellipse(cX, cY, 10*sc, 10*sc);
   }
 }
 
 void drawExtras() {
+  
+  // EYES - top left
   shape(eyesSVG, 65*sc, 65*sc, 350*sc, 350*sc*eyesSVG.height/eyesSVG.width); 
 
-  // gender - bottom left
+  // GENDER - bottom left
   setupText(LEFT);
   text("Gender", 65*sc, textY);
 
@@ -156,13 +162,13 @@ void drawExtras() {
   text("Women", 125*sc, height-92*sc);
 
 
-  // cannes - bottom right
+  // CANNES - bottom right
   shape(cannesSVG, 1705*sc, height-195*sc, 130*sc, 130*sc);   
   setupText(CENTER);
   text("Award", 1770*sc, textY);
 
   setupSubtext(CENTER);
-  text(awardText, 1770*sc, subtextY);
+  text(awardType, 1770*sc, subtextY);
 }
 
 
@@ -185,6 +191,10 @@ void drawGrid() {
   popStyle();
 }
 
+/**
+ * HELPERS
+ **/
+ 
 int getCol(int gender, String emotion) {
   // 0-male, 1-female
   int col = 0;
@@ -219,6 +229,7 @@ float getLerpVal(int col) {
   return lerp(val0, val1, (clip.time()-t));
 }
 
+// 22pt Raleway, cyan
 void setupText(int align) {
   textAlign(align);
   textFont(ralewayF);
@@ -226,6 +237,7 @@ void setupText(int align) {
   fill(genderC[0]);
 }
 
+// 22pt Titillium, cyan
 void setupSubtext(int align) {
   textAlign(align);
   textFont(titilliumF);
@@ -234,7 +246,7 @@ void setupSubtext(int align) {
 }
 
 /**
- * HELPERS
+ * AUTO HELPERS
  **/
 
 // automatically start in fullscreen
@@ -245,9 +257,9 @@ boolean sketchFullScreen() {
 // Called every time a new frame is available to read
 void movieEvent(Movie m) {
   m.read();
-  println("t2 "+clip.time());
 }
 
+// Toggle grid
 void keyPressed() {
   if (key == ' ') {
     showGrid = !showGrid;
