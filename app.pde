@@ -25,9 +25,8 @@ void setup() {
   sc = width/1920.0;
 
   // load list of content directories, choose one
-  println(System.getProperty("user.dir"));
-  String rootDir = "/Users/lmccart/Documents/quickie/app/data/content/";
-  File file = new File(rootDir); //pend
+  String path = dataPath("content");
+  File file = new File(path); //pend
   String dirs[] = file.list(new FilenameFilter() {
     @Override
       public boolean accept(File current, String name) {
@@ -40,7 +39,7 @@ void setup() {
   println("choosing "+i+": "+dirs[i]);
 
   // load content
-  String path = rootDir+dirs[i]+"/";
+  path += "/"+dirs[i]+"/";
   clip = new Movie(this, path+"clip.mp4");
   clip.loop();
   data = loadTable(path+"data.csv", "header");
