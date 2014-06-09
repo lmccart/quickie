@@ -7,6 +7,7 @@ int curVid;
 Movie[] clips;
 Table[] datas; // pos-f, eng-f, neg-f, pos-m, eng-m, neg-m
 PShape menSVG, womenSVG, cannesSVG, eyesSVG;
+PImage gradient;
 PFont ralewayF, titilliumF;
 String[] awardTypes;
 
@@ -56,11 +57,12 @@ void setup() {
   println("choosing "+curVid+": "+dirs[curVid]);
   clips[curVid].play();
 
-  // load svgs
+  // load images
   menSVG = loadShape("Icon_Men.svg");
   womenSVG = loadShape("Icon_Women.svg");
   cannesSVG = loadShape("Logo_CannesLions.svg");
   eyesSVG = loadShape("Logo_Realeyes.svg");
+  gradient = loadImage("gradient.png");
 
   // load fonts
   ralewayF = loadFont("Raleway-Medium-22.vlw");
@@ -71,7 +73,10 @@ void setup() {
 
 
 void draw() {
+  noTint();
   image(clips[curVid], 0, 0, width, height);
+  tint(255, 255*0.8);
+  image(gradient, 0, 0, width, height);
   drawBars();
   drawGraph();
   drawExtras();
@@ -145,17 +150,22 @@ void drawGraph() {
     curveVertex(x0, height-y0);
     float maxH = 170.0*sc;
     float totalW = 710.0*sc;
-    for (int i=0; i<datas[curVid].getRowCount (); i++) {
-      float x = x0 + i*totalW/(datas[curVid].getRowCount()-1);
-      float y = height - y0 - maxH*datas[curVid].getFloat(i, getCol(j, "Engagement"));
+    for (int i=0; i<= datas[curVid].getRowCount(); i++) {
+      float x = x0 + i*totalW/datas[curVid].getRowCount();
+      float y = height - y0 - maxH*datas[curVid].getFloat(min(i, datas[curVid].getRowCount()-1), getCol(j, "Engagement"));
       curveVertex(x, y);
+      if (i == datas[curVid].getRowCount()) {
+        curveVertex(x, y);
+        println("curve x = "+x);
+      }
     }
     endShape();
 
     // draw little circle
-    float cX = x0 + clips[curVid].time()*totalW/(datas[curVid].getRowCount()-1);
+    float cX = x0 + clips[curVid].time()*totalW/datas[curVid].getRowCount();
     float cY = height - y0 - maxH*getLerpVal(getCol(j, "Engagement"));
     ellipse(cX, cY, 10*sc, 10*sc);
+    println("circle x = "+cX);
   }
 }
 
