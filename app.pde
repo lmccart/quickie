@@ -137,7 +137,7 @@ void drawGraph() {
     endShape();
 
     // draw little circle
-    float cX = x0 + clip.time()*totalW/data.getRowCount();
+    float cX = x0 + clip.time()*totalW/(data.getRowCount()-1);
     float cY = height - y0 - maxH*getLerpVal(getCol(j, "Engagement"));
     ellipse(cX, cY, 10*sc, 10*sc);
   }
