@@ -1,12 +1,14 @@
 import processing.video.*;
 import java.io.FilenameFilter;
 
+int curVid;
+
 // assets
-Movie clip;
-Table data; // pos-f, eng-f, neg-f, pos-m, eng-m, neg-m
+Movie[] clips;
+Table[] datas; // pos-f, eng-f, neg-f, pos-m, eng-m, neg-m
 PShape menSVG, womenSVG, cannesSVG, eyesSVG;
 PFont ralewayF, titilliumF;
-String awardType;
+String[] awardTypes;
 
 // styling
 float sc; // scaler, design grid is 1920x1080
@@ -25,8 +27,8 @@ void setup() {
   sc = width/1920.0;
 
   // load list of content directories, choose one
-  String path = dataPath("content");
-  File file = new File(path); //pend
+  String contentPath = dataPath("content");
+  File file = new File(contentPath); //pend
   String dirs[] = file.list(new FilenameFilter() {
     @Override
       public boolean accept(File current, String name) {
@@ -35,16 +37,24 @@ void setup() {
   }
   );
   println("loaded "+dirs.length+" options");
-  int i = floor(random(dirs.length));
-  println("choosing "+i+": "+dirs[i]);
-
+  
   // load content
-  path += "/"+dirs[i]+"/";
-  clip = new Movie(this, path+"clip.mp4");
-  clip.loop();
-  data = loadTable(path+"data.csv", "header");
-  awardType = loadStrings(path+"award.txt")[0];
-  awardType = awardType.substring(0,1).toUpperCase() + awardType.substring(1);
+  datas = new Table[dirs.length];
+  clips = new Movie[dirs.length];
+  awardTypes = new String[dirs.length];
+  
+  for (int i=0; i<dirs.length; i++) {
+    String path = contentPath+"/"+dirs[i]+"/";
+    clips[i] = new Movie(this, path+"clip.mp4");
+    datas[i] = loadTable(path+"data.csv", "header");
+    awardTypes[i] = loadStrings(path+"award.txt")[0];
+    awardTypes[i] = awardTypes[i].substring(0,1).toUpperCase() + awardTypes[i].substring(1);
+  }
+
+  // choose start
+  curVid = floor(random(dirs.length));
+  println("choosing "+curVid+": "+dirs[curVid]);
+  clips[curVid].play();
 
   // load svgs
   menSVG = loadShape("Icon_Men.svg");
@@ -61,12 +71,18 @@ void setup() {
 
 
 void draw() {
-  image(clip, 0, 0, width, height);
+  image(clips[curVid], 0, 0, width, height);
   drawBars();
   drawGraph();
   drawExtras();
 
   if (showGrid) drawGrid();
+  
+  if (clips[curVid].time() == clips[curVid].duration()) { 
+    curVid = floor(random(clips.length));
+    clips[curVid].jump(0);
+    clips[curVid].play();
+  }
 }
 
 
@@ -129,15 +145,15 @@ void drawGraph() {
     curveVertex(x0, height-y0);
     float maxH = 170.0*sc;
     float totalW = 710.0*sc;
-    for (int i=0; i<data.getRowCount (); i++) {
-      float x = x0 + i*totalW/(data.getRowCount()-1);
-      float y = height - y0 - maxH*data.getFloat(i, getCol(j, "Engagement"));
+    for (int i=0; i<datas[curVid].getRowCount (); i++) {
+      float x = x0 + i*totalW/(datas[curVid].getRowCount()-1);
+      float y = height - y0 - maxH*datas[curVid].getFloat(i, getCol(j, "Engagement"));
       curveVertex(x, y);
     }
     endShape();
 
     // draw little circle
-    float cX = x0 + clip.time()*totalW/(data.getRowCount()-1);
+    float cX = x0 + clips[curVid].time()*totalW/(datas[curVid].getRowCount()-1);
     float cY = height - y0 - maxH*getLerpVal(getCol(j, "Engagement"));
     ellipse(cX, cY, 10*sc, 10*sc);
   }
@@ -167,7 +183,7 @@ void drawExtras() {
   text("Award", 1770*sc, textY);
 
   setupSubtext(CENTER);
-  text(awardType, 1770*sc, subtextY);
+  text(awardTypes[curVid], 1770*sc, subtextY);
 }
 
 
@@ -216,16 +232,16 @@ int getCol(int gender, String emotion) {
 
 // uses data in csv to lerp inbetween values based on current playtime
 float getLerpVal(int col) {
-  int t = floor(clip.time());
-  if (t >= data.getRowCount()) {
-    t = data.getRowCount()-1;
+  int t = floor(clips[curVid].time());
+  if (t >= datas[curVid].getRowCount()) {
+    t = datas[curVid].getRowCount()-1;
   }
-  float val0 = data.getFloat(t, col);
+  float val0 = datas[curVid].getFloat(t, col);
   float val1 = val0;
-  if (t+1 < data.getRowCount()) {
-    val1 = data.getFloat(t+1, col);
+  if (t+1 < datas[curVid].getRowCount()) {
+    val1 = datas[curVid].getFloat(t+1, col);
   }
-  return lerp(val0, val1, (clip.time()-t));
+  return lerp(val0, val1, (clips[curVid].time()-t));
 }
 
 // 22pt Raleway, cyan
