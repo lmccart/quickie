@@ -21,8 +21,8 @@ float textY;
 float subtextY;
 
 void setup() {
-  size(1280, 720, OPENGL);
-//  size(displayWidth, round(refHeight * displayWidth / refWidth), OPENGL);
+//  size(1280, 720, OPENGL);
+  size(displayWidth, round(refHeight * displayWidth / refWidth), OPENGL);
   smooth(8);
   ortho(0, width, 0, height);
   refScale = width / refWidth;
@@ -72,8 +72,8 @@ void setup() {
   grandPrixSVG = loadShape("Medal_GrandPrix.svg");
 
   // load fonts
-  ralewayF = loadFont("Raleway-Medium-22.vlw");
-  titilliumF = loadFont("TitilliumWeb-Light-22.vlw");
+  ralewayF = createFont("Raleway-Medium.ttf", 44);
+  titilliumF = createFont("TitilliumWeb-Light.ttf", 44);
   textY = refHeight-265;
   subtextY = refHeight-235;
 }
@@ -81,7 +81,7 @@ void setup() {
 void draw() {
   noTint();
   background(0);
-//  image(clips[curVid], 0, 0, width, height);
+  image(clips[curVid], 0, 0, width, height);
   pushStyle();
   tint(255, 200);
   image(gradient, 0, 0, refWidth, refHeight);
@@ -91,17 +91,17 @@ void draw() {
   drawBars();
   drawGraph();
   drawExtras();
-  drawGrid();
+//  drawGrid();
 
   if (clips[curVid].time() == clips[curVid].duration()) { 
     curVid = floor(random(clips.length));
     clips[curVid].jump(0);
     clips[curVid].play();
   }
-  
-  if(frameCount == 30) {
-    saveFrame("render.png");
-  }
+
+//  if(frameCount == 30) {
+//    saveFrame("render.png");
+//  }
 }
 
 // Called every time a new frame is available to read

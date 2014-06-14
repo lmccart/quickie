@@ -48,19 +48,19 @@ float getLerpVal(int col) {
   return map(v, limits[curVid][0], limits[curVid][1], 0, 1);
 }
 
-// 22pt Raleway, cyan
+// 22px Raleway, cyan
 void setupText(int align) {
   textAlign(align);
   textFont(ralewayF);
-  textSize(22.0);
+  textSize(22);
   fill(genderC[0]);
 }
 
-// 22pt Titillium, cyan
+// 22px Titillium, cyan
 void setupSubtext(int align) {
   textAlign(align);
   textFont(titilliumF);
-  textSize(22.0);
+  textSize(22);
   fill(genderC[0]);
 }
 
