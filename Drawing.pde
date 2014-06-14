@@ -17,6 +17,7 @@ void drawBars() {
     for (int j=0; j<2; j++) { // men and women
       float val = getLerpVal(getCol(j, emotions[i]));
       totalV += val;
+      val = map(val, limits[curVid][0], limits[curVid][1], 0, 1);
 
       fill(genderC[j]);
       float h = maxH*val;
@@ -49,11 +50,14 @@ void drawGraph() {
     beginShape();
     noFill();
     curveVertex(x0, refHeight-y0);
-    for (int i=0; i<= datas[curVid].getRowCount(); i++) {
-      float x = x0 + i*totalW/datas[curVid].getRowCount();
-      float y = refHeight - y0 - maxH*datas[curVid].getFloat(min(i, datas[curVid].getRowCount()-1), getCol(j, "Engagement"));
+    int numRows = datas[curVid].getRowCount();
+    for (int i=0; i<= numRows; i++) {
+      float x = x0 + i*totalW/numRows;
+      float val = datas[curVid].getFloat(min(i, numRows-1), getCol(j, "Engagement"));
+      val = map(val, limits[curVid][0], limits[curVid][1], 0, 1);
+      float y = refHeight - y0 - maxH*val;
       curveVertex(x, y);
-      if (i == datas[curVid].getRowCount()) {
+      if (i == numRows) {
         curveVertex(x, y);
       }
     }

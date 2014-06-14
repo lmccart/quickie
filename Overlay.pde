@@ -6,6 +6,7 @@ int curVid;
 // assets
 Movie[] clips;
 Table[] datas; // pos-f, eng-f, neg-f, pos-m, eng-m, neg-m
+float[][] limits;
 PShape menSVG, womenSVG, eyesSVG;
 PShape shortlistSVG, bronzeSVG, silverSVG, goldSVG, grandPrixSVG; 
 PImage gradient;
@@ -50,6 +51,7 @@ void setup() {
     awardTypes[i] = loadStrings(path+"award.txt")[0];
     awardTypes[i] = awardTypes[i].substring(0,1).toUpperCase() + awardTypes[i].substring(1);
   }
+  getLimits();
 
   // choose start
   curVid = floor(random(dirs.length));
