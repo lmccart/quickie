@@ -1,3 +1,15 @@
+void centerAndScale(float w, float h) {
+  translate(width / 2, height / 2);
+  float widthRatio = width / w;
+  float heightRatio = height / h;
+  if(widthRatio / heightRatio > 1) {
+    scale(widthRatio);
+  } else {
+    scale(heightRatio);
+  }
+  translate(-w / 2, -h / 2);
+}
+
 int getCol(int gender, String emotion) {
   // 0-male, 1-female
   int col = 0;

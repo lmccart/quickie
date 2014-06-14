@@ -21,8 +21,8 @@ float textY;
 float subtextY;
 
 void setup() {
-//  size(1280, 720, OPENGL);
-  size(displayWidth, round(refHeight * displayWidth / refWidth), OPENGL);
+  size(1280, 720, OPENGL);
+//  size(displayWidth, round(refHeight * displayWidth / refWidth), OPENGL);
   smooth(8);
   ortho(0, width, 0, height);
   refScale = width / refWidth;
@@ -81,13 +81,19 @@ void setup() {
 void draw() {
   noTint();
   background(0);
-  image(clips[curVid], 0, 0, width, height);
+  
+  pushMatrix();
+  centerAndScale(clips[curVid].width, clips[curVid].height);
+  image(clips[curVid], 0, 0);
+  popMatrix();
+  
+  scale(refScale);
+  
   pushStyle();
   tint(255, 200);
   image(gradient, 0, 0, refWidth, refHeight);
   popStyle();
   
-  scale(refScale, refScale);
   drawBars();
   drawGraph();
   drawExtras();
