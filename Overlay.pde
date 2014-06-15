@@ -6,7 +6,7 @@ int curVid;
 boolean zoomGraph = true;
 PGraphics graphBuffer;
 PImage graphImg;
-float graphWidth = 710, graphHeight = 170, graphPad = 10;
+float graphWidth = 710, graphHeight = 150, graphPad = 10;
 
 // assets
 Movie[] clips;
