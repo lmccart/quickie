@@ -1,5 +1,7 @@
 void drawBars() {
-  String[] emotions = { "Positive", "Negative", "Surprise" };
+  String[] emotions = { 
+    "Positive", "Negative", "Surprise"
+  };
 
   noStroke();
   float x = 1065.0;
@@ -32,43 +34,46 @@ void drawBars() {
 }
 
 void drawGraph() {
+
+  float dur = clips[curVid].duration();
+  int secs = 30;
+
+  drawGraphBuffer();
+  int x = 0;
+  float start = 0;
+  if (zoomGraph) {
+    start = max(min(clips[curVid].time()-(float)secs*0.5, dur-(float)secs), 0);
+    x = round(710*start/secs);
+  }
+  graphImg = graphBuffer.get(x, 0, 710+20, graphBuffer.height);
+
   strokeWeight(3);
   noFill();
 
   // label
   float x0 = 245.0;
+  float y0 = refHeight-65;
+  float maxH = 170.0;
   setupText(LEFT);
   text("Engagement", x0, textY);
 
   // draw curves
   for (int j=0; j<2; j++) {
-    float y0 = 65.0;
-    float maxH = 170.0;
-    float totalW = 710.0;
-    stroke(genderC[j]);
-    
-    beginShape();
-    noFill();
-    curveVertex(x0, refHeight-y0);
-    int numRows = datas[curVid].getRowCount();
-    for (int i=0; i<= numRows; i++) {
-      float x = x0 + i*totalW/numRows;
-      float val = datas[curVid].getFloat(min(i, numRows-1), getCol(j, "Engagement"));
-      val = map(val, limits[curVid][0], limits[curVid][1], 0, 1);
-      float y = refHeight - y0 - maxH*val;
-      curveVertex(x, y);
-      if (i == numRows) {
-        curveVertex(x, y);
-      }
-    }
-    endShape();
-    
+
+    image(graphImg, x0-10, y0-graphBuffer.height-10);
+
     // draw little circle
     pushMatrix();
     translate(0, 0, 1); // easiest way to get circles on top of curve
     fill(0);
-    float cX = x0 + clips[curVid].time()*totalW/datas[curVid].getRowCount();
-    float cY = refHeight - y0 - maxH*getLerpVal(getCol(j, "Engagement"));
+    stroke(genderC[j]);
+    float cX = x0;
+    float cY = y0 - maxH*getLerpVal(getCol(j, "Engagement"));
+    if (zoomGraph) {
+      cX += (clips[curVid].time()-start)*710.0/30.0;
+    } else {
+      cX += clips[curVid].time()*710.0/datas[curVid].getRowCount();
+    }
     ellipse(cX, cY, 10, 10);
     popMatrix();
   }
@@ -93,13 +98,13 @@ void drawExtras() {
   // CANNES - bottom right
   PShape curMedal;
   String curAward = awardTypes[curVid];
-  if(curAward.equals("bronze")) {
+  if (curAward.equals("bronze")) {
     curMedal = bronzeSVG;
-  } else if(curAward.equals("gold")) {
+  } else if (curAward.equals("gold")) {
     curMedal = goldSVG;
-  } else if(curAward.equals("silver")) {
+  } else if (curAward.equals("silver")) {
     curMedal = silverSVG;
-  } else if(curAward.equals("shortlist")) {
+  } else if (curAward.equals("shortlist")) {
     curMedal = shortlistSVG;
   } else {
     curMedal = grandPrixSVG;
@@ -126,5 +131,48 @@ void drawGrid() {
   line(0, bigPad, refWidth, bigPad);
   line(0, refHeight - bigPad, refWidth, refHeight - bigPad);
   popStyle();
+}
+
+void drawGraphBuffer() {
+  float h = graphBuffer.height - 20.0;
+
+  graphBuffer.beginDraw();
+  //graphBuffer.smooth(8);
+  //graphBuffer.ortho(0, graphBuffer.width, 0, graphBuffer.height);
+
+  graphBuffer.strokeWeight(3);
+  graphBuffer.fill(255, 0, 0);
+  graphBuffer.translate(10, 10);
+
+
+  // draw curves
+  for (int j=0; j<2; j++) {
+    float totalW = 710.0;
+
+    graphBuffer.rect(0, 0, totalW, 170);
+    if (zoomGraph) {
+      totalW *= clips[curVid].duration() / 30.0;
+    }
+
+    graphBuffer.stroke(genderC[j]);
+    graphBuffer.noFill();
+
+    graphBuffer.beginShape();
+    graphBuffer.curveVertex(0, h);
+
+    int numRows = datas[curVid].getRowCount();
+    for (int i=0; i<= numRows; i++) {
+      float x = i*totalW/numRows;
+      float val = datas[curVid].getFloat(min(i, numRows-1), getCol(j, "Engagement"));
+      val = map(val, limits[curVid][0], limits[curVid][1], 0, 1);
+      float y = h*(1-val);
+      graphBuffer.curveVertex(x, y);
+      if (i == numRows) {
+        graphBuffer.curveVertex(x, y);
+      }
+    }
+    graphBuffer.endShape();
+  }
+  graphBuffer.endDraw();
 }
 

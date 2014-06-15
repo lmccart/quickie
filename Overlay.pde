@@ -3,6 +3,10 @@ import java.io.FilenameFilter;
 
 int curVid;
 
+boolean zoomGraph = true;
+PGraphics graphBuffer;
+PImage graphImg;
+
 // assets
 Movie[] clips;
 Table[] datas; // pos-f, eng-f, neg-f, pos-m, eng-m, neg-m
@@ -52,6 +56,7 @@ void setup() {
     awardTypes[i] = awardTypes[i].substring(0,1).toUpperCase() + awardTypes[i].substring(1);
   }
   getLimits();
+  graphBuffer = createGraphics(710*10+20, 170+20, OPENGL);
 
   // choose start
   curVid = floor(random(dirs.length));
@@ -97,6 +102,7 @@ void draw() {
   drawBars();
   drawGraph();
   drawExtras();
+  
 //  drawGrid();
 
   if (clips[curVid].time() == clips[curVid].duration()) { 

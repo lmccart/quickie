@@ -47,7 +47,13 @@ void getLimits() {
 
 // uses data in csv to lerp inbetween values based on current playtime
 float getLerpVal(int col) {
-  int t = floor(clips[curVid].time());
+  return getLerpVal(col, clips[curVid].time()); 
+}
+
+// uses data in csv to lerp inbetween values
+float getLerpVal(int col, float start) {
+  
+  int t = floor(start);
   if (t >= datas[curVid].getRowCount()) {
     t = datas[curVid].getRowCount()-1;
   }
@@ -56,7 +62,7 @@ float getLerpVal(int col) {
   if (t+1 < datas[curVid].getRowCount()) {
     val1 = datas[curVid].getFloat(t+1, col);
   }
-  float v = lerp(val0, val1, (clips[curVid].time()-t));
+  float v = lerp(val0, val1, (start-t));
   return map(v, limits[curVid][0], limits[curVid][1], 0, 1);
 }
 
