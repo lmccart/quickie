@@ -36,16 +36,15 @@ void drawBars() {
 void drawGraph() {
 
   float dur = clips[curVid].duration();
-  int secs = 30;
+  float secs = 30;
 
-  drawGraphBuffer();
-  int x = 0;
+  int x = int(-1*graphPad);
   float start = 0;
   if (zoomGraph) {
     start = max(min(clips[curVid].time()-(float)secs*0.5, dur-(float)secs), 0);
-    x = round(710*start/secs);
+    x += round(graphWidth*start/secs);
   }
-  graphImg = graphBuffer.get(x, 0, 710+20, graphBuffer.height);
+  graphImg = graphBuffer.get(x, 0, int(graphWidth+2*graphPad), graphBuffer.height);
 
   strokeWeight(3);
   noFill();
@@ -60,7 +59,7 @@ void drawGraph() {
   // draw curves
   for (int j=0; j<2; j++) {
 
-    image(graphImg, x0-10, y0-graphBuffer.height-10);
+    image(graphImg, x0-20, y0-graphBuffer.height+10);
 
     // draw little circle
     pushMatrix();
@@ -70,13 +69,54 @@ void drawGraph() {
     float cX = x0;
     float cY = y0 - maxH*getLerpVal(getCol(j, "Engagement"));
     if (zoomGraph) {
-      cX += (clips[curVid].time()-start)*710.0/30.0;
+      cX += (clips[curVid].time()-start)*graphWidth/secs;
     } else {
-      cX += clips[curVid].time()*710.0/datas[curVid].getRowCount();
+      cX += clips[curVid].time()*graphWidth/datas[curVid].getRowCount();
     }
-    ellipse(cX, cY, 10, 10);
+    ellipse(cX, cY, graphPad, graphPad);
     popMatrix();
   }
+}
+
+
+void drawGraphBuffer() {
+
+  graphBuffer.beginDraw();
+  graphBuffer.clear();
+  //graphBuffer.smooth(8);
+  //graphBuffer.ortho(0, graphBuffer.width, 0, graphBuffer.height);
+
+  graphBuffer.strokeWeight(3);
+  graphBuffer.translate(10, 10);
+
+  // draw curves
+  for (int j=0; j<2; j++) {
+    float totalW = 710.0;
+
+    if (zoomGraph) {
+      totalW *= clips[curVid].duration() / 30.0;
+    }
+
+    graphBuffer.stroke(genderC[j]);
+    graphBuffer.noFill();
+
+    graphBuffer.beginShape();
+    graphBuffer.curveVertex(0, graphHeight);
+
+    int numRows = datas[curVid].getRowCount();
+    for (int i=0; i<= numRows; i++) {
+      float x = i*totalW/numRows;
+      float val = datas[curVid].getFloat(min(i, numRows-1), getCol(j, "Engagement"));
+      val = map(val, limits[curVid][0], limits[curVid][1], 0, 1);
+      float y = graphHeight*(1-val);
+      graphBuffer.curveVertex(x, y);
+      if (i == numRows) {
+        graphBuffer.curveVertex(x, y);
+      }
+    }
+    graphBuffer.endShape();
+  }
+  graphBuffer.endDraw();
 }
 
 void drawExtras() {
@@ -133,46 +173,4 @@ void drawGrid() {
   popStyle();
 }
 
-void drawGraphBuffer() {
-  float h = graphBuffer.height - 20.0;
-
-  graphBuffer.beginDraw();
-  //graphBuffer.smooth(8);
-  //graphBuffer.ortho(0, graphBuffer.width, 0, graphBuffer.height);
-
-  graphBuffer.strokeWeight(3);
-  graphBuffer.fill(255, 0, 0);
-  graphBuffer.translate(10, 10);
-
-
-  // draw curves
-  for (int j=0; j<2; j++) {
-    float totalW = 710.0;
-
-    graphBuffer.rect(0, 0, totalW, 170);
-    if (zoomGraph) {
-      totalW *= clips[curVid].duration() / 30.0;
-    }
-
-    graphBuffer.stroke(genderC[j]);
-    graphBuffer.noFill();
-
-    graphBuffer.beginShape();
-    graphBuffer.curveVertex(0, h);
-
-    int numRows = datas[curVid].getRowCount();
-    for (int i=0; i<= numRows; i++) {
-      float x = i*totalW/numRows;
-      float val = datas[curVid].getFloat(min(i, numRows-1), getCol(j, "Engagement"));
-      val = map(val, limits[curVid][0], limits[curVid][1], 0, 1);
-      float y = h*(1-val);
-      graphBuffer.curveVertex(x, y);
-      if (i == numRows) {
-        graphBuffer.curveVertex(x, y);
-      }
-    }
-    graphBuffer.endShape();
-  }
-  graphBuffer.endDraw();
-}
 

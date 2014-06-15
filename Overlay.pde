@@ -6,6 +6,7 @@ int curVid;
 boolean zoomGraph = true;
 PGraphics graphBuffer;
 PImage graphImg;
+float graphWidth = 710, graphHeight = 170, graphPad = 10;
 
 // assets
 Movie[] clips;
@@ -19,14 +20,16 @@ String[] awardTypes;
 
 // styling
 float refScale, refWidth = 1920, refHeight = 1080;
-color[] genderC = { color(0, 255, 255), color(102, 255, 0) }; // cyan, green
+color[] genderC = { 
+  color(0, 255, 255), color(102, 255, 0)
+}; // cyan, green
 color gridC = color(255, 61, 255);
 float textY;
 float subtextY;
 
 void setup() {
   size(1280, 720, OPENGL);
-//  size(displayWidth, round(refHeight * displayWidth / refWidth), OPENGL);
+  //  size(displayWidth, round(refHeight * displayWidth / refWidth), OPENGL);
   smooth(8);
   ortho(0, width, 0, height);
   refScale = width / refWidth;
@@ -42,33 +45,34 @@ void setup() {
   }
   );
   println("loaded "+dirs.length+" options");
-  
+
   // load content
   datas = new Table[dirs.length];
   clips = new Movie[dirs.length];
   awardTypes = new String[dirs.length];
-  
+
   for (int i=0; i<dirs.length; i++) {
     String path = contentPath+"/"+dirs[i]+"/";
     clips[i] = new Movie(this, path+"clip.mp4");
     datas[i] = loadTable(path+"data.csv", "header");
     awardTypes[i] = loadStrings(path+"award.txt")[0];
-    awardTypes[i] = awardTypes[i].substring(0,1).toUpperCase() + awardTypes[i].substring(1);
+    awardTypes[i] = awardTypes[i].substring(0, 1).toUpperCase() + awardTypes[i].substring(1);
   }
   getLimits();
-  graphBuffer = createGraphics(710*10+20, 170+20, OPENGL);
+  graphBuffer = createGraphics(int(graphWidth*10+2*graphPad), int(graphHeight+2*graphPad), OPENGL);
 
   // choose start
   curVid = floor(random(dirs.length));
   println("choosing "+curVid+": "+dirs[curVid]);
   clips[curVid].play();
+  drawGraphBuffer();
 
   // load images
   menSVG = loadShape("Icon_Men.svg");
   womenSVG = loadShape("Icon_Women.svg");
   eyesSVG = loadShape("Logo_Realeyes.svg");
   gradient = loadImage("gradient.png");
-  
+
   // load medals
   shortlistSVG = loadShape("Medal_Shortlist.svg");
   bronzeSVG = loadShape("Medal_Bronze.svg");
@@ -86,37 +90,46 @@ void setup() {
 void draw() {
   noTint();
   background(0);
-  
+
   pushMatrix();
   centerAndScale(clips[curVid].width, clips[curVid].height);
   image(clips[curVid], 0, 0);
   popMatrix();
-  
+
   scale(refScale);
-  
+
   pushStyle();
   tint(255, 200);
   image(gradient, 0, 0, refWidth, refHeight);
   popStyle();
-  
+
   drawBars();
   drawGraph();
   drawExtras();
-  
-//  drawGrid();
+
+  //  drawGrid();
 
   if (clips[curVid].time() == clips[curVid].duration()) { 
     curVid = floor(random(clips.length));
     clips[curVid].jump(0);
     clips[curVid].play();
+    drawGraphBuffer();
   }
 
-//  if(frameCount == 30) {
-//    saveFrame("render.png");
-//  }
+  //  if(frameCount == 30) {
+  //    saveFrame("render.png");
+  //  }
 }
 
 // Called every time a new frame is available to read
 void movieEvent(Movie m) {
   m.read();
 }
+
+void keyPressed() {
+  if (key == ' ') {
+    zoomGraph = !zoomGraph;
+    drawGraphBuffer();
+  }
+}
+
