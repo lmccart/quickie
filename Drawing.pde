@@ -52,7 +52,6 @@ void drawGraph() {
   // label
   float x0 = 245.0;
   float y0 = refHeight-65;
-  float maxH = 170.0;
   setupText(LEFT);
   text("Engagement", x0, textY);
 
@@ -67,7 +66,7 @@ void drawGraph() {
     fill(0);
     stroke(genderC[j]);
     float cX = x0;
-    float cY = y0 - maxH*getLerpVal(getCol(j, "Engagement"));
+    float cY = y0 - graphHeight*getLerpVal(getCol(j, "Engagement"));
     if (zoomGraph) {
       cX += (clips[curVid].time()-start)*graphWidth/secs;
     } else {
