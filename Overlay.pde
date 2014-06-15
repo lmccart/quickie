@@ -7,6 +7,7 @@ boolean zoomGraph = true;
 PGraphics graphBuffer;
 PImage graphImg;
 float graphWidth = 710, graphHeight = 150, graphPad = 10;
+float circleSize = 15;
 
 // assets
 Movie[] clips;
@@ -28,8 +29,8 @@ float textY;
 float subtextY;
 
 void setup() {
-  size(1280, 720, OPENGL);
-  //  size(displayWidth, round(refHeight * displayWidth / refWidth), OPENGL);
+//  size(1280, 720, OPENGL);
+  size(displayWidth, round(refHeight * displayWidth / refWidth), OPENGL);
   smooth(8);
   ortho(0, width, 0, height);
   refScale = width / refWidth;
@@ -69,7 +70,7 @@ void setup() {
   // load images
   menSVG = loadShape("Icon_Men.svg");
   womenSVG = loadShape("Icon_Women.svg");
-  eyesSVG = loadShape("Logo_Realeyes.svg");
+  eyesSVG = loadShape("Logo_Realeyes_Ipsos.svg");
   gradient = loadImage("gradient.png");
 
   // load medals
@@ -115,9 +116,9 @@ void draw() {
     drawGraphBuffer();
   }
 
-  if(frameCount == 30) {
-    saveFrame("render.png");
-  }
+//  if(frameCount == 30) {
+//    saveFrame("render.png");
+//  }
 }
 
 // Called every time a new frame is available to read

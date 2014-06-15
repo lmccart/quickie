@@ -7,7 +7,7 @@ void drawBars() {
   float x = 1065.0;
   float w = 80.0;
   float y = refHeight-65.0;
-  float maxH = 160.0;
+  float maxH = 140.0;
   for (int i=0; i<3; i++) {
     float textX = x+85.0;
     float totalV = 0;
@@ -46,9 +46,6 @@ void drawGraph() {
   }
   graphImg = graphBuffer.get(x, 0, int(graphWidth+2*graphPad), graphBuffer.height);
 
-  strokeWeight(3);
-  noFill();
-
   // label
   float x0 = 245.0;
   float y0 = refHeight-65;
@@ -72,7 +69,8 @@ void drawGraph() {
     } else {
       cX += clips[curVid].time()*graphWidth/datas[curVid].getRowCount();
     }
-    ellipse(cX, cY, graphPad, graphPad);
+    strokeWeight(5);
+    ellipse(cX, cY, circleSize, circleSize);
     popMatrix();
   }
 }
@@ -85,7 +83,7 @@ void drawGraphBuffer() {
   //graphBuffer.smooth(8);
   //graphBuffer.ortho(0, graphBuffer.width, 0, graphBuffer.height);
 
-  graphBuffer.strokeWeight(3);
+  graphBuffer.strokeWeight(5);
   graphBuffer.translate(10, 10);
 
   // draw curves
@@ -133,22 +131,25 @@ void drawExtras() {
   fill(genderC[1]);
   shape(womenSVG, 65, refHeight-135); 
   text("Women", 128, refHeight-97);
+  
+  setupText(CENTER);
+  text("Award", 1770, textY);
 
   // CANNES - bottom right
   PShape curMedal;
-  String curAward = awardTypes[curVid];
-  if (curAward.equals("bronze")) {
+  String curAward = trim(awardTypes[curVid]);
+  if (curAward.equals("Bronze Medal")) {
     curMedal = bronzeSVG;
-  } else if (curAward.equals("gold")) {
+  } else if (curAward.equals("Gold Medal")) {
     curMedal = goldSVG;
-  } else if (curAward.equals("silver")) {
+  } else if (curAward.equals("Silver Medal")) {
     curMedal = silverSVG;
-  } else if (curAward.equals("shortlist")) {
-    curMedal = shortlistSVG;
-  } else {
+  } else if (curAward.equals("Grand Prix"))  {
     curMedal = grandPrixSVG;
-  }
-  shape(curMedal, refWidth - 235, refHeight - 195);
+  } else {
+    curMedal = shortlistSVG;
+  } 
+  shape(curMedal, refWidth - 235, refHeight - 235);
 }
 
 void drawGrid() {
