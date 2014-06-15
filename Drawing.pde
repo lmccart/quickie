@@ -128,11 +128,11 @@ void drawExtras() {
 
   setupSubtext(LEFT);
   shape(menSVG, 65, refHeight-215); 
-  text("Men", 125, refHeight-172);
+  text("Men", 128, refHeight-178);
 
   fill(genderC[1]);
   shape(womenSVG, 65, refHeight-135); 
-  text("Women", 125, refHeight-92);
+  text("Women", 128, refHeight-97);
 
   // CANNES - bottom right
   PShape curMedal;

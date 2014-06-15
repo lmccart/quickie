@@ -56,7 +56,6 @@ void setup() {
     clips[i] = new Movie(this, path+"clip.mp4");
     datas[i] = loadTable(path+"data.csv", "header");
     awardTypes[i] = loadStrings(path+"award.txt")[0];
-    awardTypes[i] = awardTypes[i].substring(0, 1).toUpperCase() + awardTypes[i].substring(1);
   }
   getLimits();
   graphBuffer = createGraphics(int(graphWidth*10+2*graphPad), int(graphHeight+2*graphPad), OPENGL);
@@ -88,8 +87,8 @@ void setup() {
 }
 
 void draw() {
-  noTint();
   background(0);
+  noTint();
 
   pushMatrix();
   centerAndScale(clips[curVid].width, clips[curVid].height);
@@ -116,9 +115,9 @@ void draw() {
     drawGraphBuffer();
   }
 
-  //  if(frameCount == 30) {
-  //    saveFrame("render.png");
-  //  }
+  if(frameCount == 30) {
+    saveFrame("render.png");
+  }
 }
 
 // Called every time a new frame is available to read
