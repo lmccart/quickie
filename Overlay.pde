@@ -30,6 +30,7 @@ float subtextY;
 
 void setup() {
 //  size(1280, 720, OPENGL);
+
   size(displayWidth, round(refHeight * displayWidth / refWidth), OPENGL);
   smooth(8);
   ortho(0, width, 0, height);

@@ -20,6 +20,7 @@ void drawBars() {
       float val = getLerpVal(getCol(j, emotions[i]));
       totalV += val;
       val = map(val, limits[curVid][0], limits[curVid][1], 0, 1);
+      val = constrain(val, 0, 1);
 
       fill(genderC[j]);
       float h = maxH*val;
