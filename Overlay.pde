@@ -19,6 +19,7 @@ PShape shortlistSVG, bronzeSVG, silverSVG, goldSVG, grandPrixSVG;
 PImage gradient;
 PFont ralewayF, titilliumF;
 String[] awardTypes;
+boolean noAward[];
 
 // styling
 float refScale, refWidth = 1920, refHeight = 1080;
@@ -52,16 +53,23 @@ void setup() {
   // load content
   datas = new Table[dirs.length];
   clips = new Movie[dirs.length];
+  noAward = new boolean[dirs.length];
   awardTypes = new String[dirs.length];
 
   for (int i=0; i<dirs.length; i++) {
     String path = contentPath+"/"+dirs[i]+"/";
     clips[i] = new Movie(this, path+"clip.mp4");
     datas[i] = loadTable(path+"data.csv", "header");
-    awardTypes[i] = loadStrings(path+"award.txt")[0];
+    File f = new File(dataPath(path+"award.txt"));
+    if (f.exists()) {
+      awardTypes[i] = loadStrings(path+"award.txt")[0];
+      noAward[i] = false;
+    } else {
+      noAward[i] = true;
+    }
   }
   getLimits();
-  graphBuffer = createGraphics(int(graphWidth*10+2*graphPad), int(graphHeight+2*graphPad), OPENGL);
+  graphBuffer = createGraphics(int(260.0+graphWidth*10+2*graphPad), int(graphHeight+2*graphPad), OPENGL);
 
   // choose start
   curVid = floor(random(dirs.length));
@@ -109,7 +117,7 @@ void draw() {
   drawGraph();
   drawExtras();
 
-  //drawGrid();
+  drawGrid();
 
   if (clips[curVid].time() == clips[curVid].duration()) { 
     curVid = floor(random(clips.length));
