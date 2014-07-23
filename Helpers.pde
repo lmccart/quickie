@@ -63,7 +63,7 @@ float getLerpVal(int col, float start) {
     val1 = datas[curVid].getFloat(t+1, col);
   }
   float v = lerp(val0, val1, (start-t));
-  return map(v, limits[curVid][0], limits[curVid][1], 0, 1);
+  return v;
 }
 
 // 22px Raleway, cyan

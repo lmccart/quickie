@@ -21,17 +21,18 @@ void drawBars() {
       totalV += val;
       val = map(val, limits[curVid][0], limits[curVid][1], 0, 1);
       val = constrain(val, 0, 1);
+      
 
       fill(genderC[j]);
       float h = maxH*val;
       rect(x, y-h, w, h);
       x += 90.0;
     }
-
     // percentage label
     setupSubtext(CENTER);
     text(round(totalV*50.0)+"%", textX, subtextY);
   }
+  
 }
 
 void drawGraph() {
@@ -64,7 +65,9 @@ void drawGraph() {
     fill(0);
     stroke(genderC[j]);
     float cX = x0;
-    float cY = y0 - graphHeight*getLerpVal(getCol(j, "Engagement"));
+    float val = getLerpVal(getCol(j, "Engagement"));
+    val = map(val, limits[curVid][0], limits[curVid][1], 0, 1);
+    float cY = y0 - graphHeight*val;
     if (zoomGraph) {
       cX += (clips[curVid].time()-start)*graphWidth/secs;
     } else {
