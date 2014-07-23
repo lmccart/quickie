@@ -28,20 +28,40 @@ int getCol(int gender, String emotion) {
   return col;
 }
 
+// 2 and 6 are engagement, rest are emos
 void getLimits() {
-  limits = new float[datas.length][2];
+  emoLimits = new float[datas.length][2];
   for (int i=0; i<datas.length; i++) {
     float minLim = 1;
     float maxLim = 0;
     for (int j=0; j<datas[i].getRowCount(); j++) {
       for (int k=0; k<datas[i].getColumnCount(); k++) {
-        float v = datas[i].getFloat(j, k);
-        minLim = min(minLim, v);
-        maxLim = max(maxLim, v);
+        if (k != 2 && k != 6) {
+          float v = datas[i].getFloat(j, k);
+          minLim = min(minLim, v);
+          maxLim = max(maxLim, v);
+        }
       } 
     }
-    limits[i][0] = minLim; 
-    limits[i][1] = maxLim;
+    emoLimits[i][0] = minLim; 
+    emoLimits[i][1] = maxLim;
+  } 
+  
+  engageLimits = new float[datas.length][2];
+  for (int i=0; i<datas.length; i++) {
+    float minLim = 1;
+    float maxLim = 0;
+    for (int j=0; j<datas[i].getRowCount(); j++) {
+      for (int k=0; k<datas[i].getColumnCount(); k++) {
+        if (k == 2 || k == 6) {
+          float v = datas[i].getFloat(j, k);
+          minLim = min(minLim, v);
+          maxLim = max(maxLim, v);
+        }
+      } 
+    }
+    engageLimits[i][0] = minLim; 
+    engageLimits[i][1] = maxLim;
   } 
 }
 

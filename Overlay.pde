@@ -12,7 +12,8 @@ float circleSize = 15;
 // assets
 Movie[] clips;
 Table[] datas; // pos-f, eng-f, neg-f, pos-m, eng-m, neg-m
-float[][] limits;
+float[][] emoLimits;
+float[][] engageLimits;
 PShape menSVG, womenSVG, eyesSVG;
 PShape shortlistSVG, bronzeSVG, silverSVG, goldSVG, grandPrixSVG; 
 PImage gradient;
@@ -108,7 +109,7 @@ void draw() {
   drawGraph();
   drawExtras();
 
-  //  drawGrid();
+  //drawGrid();
 
   if (clips[curVid].time() == clips[curVid].duration()) { 
     curVid = floor(random(clips.length));

@@ -19,10 +19,8 @@ void drawBars() {
     for (int j=0; j<2; j++) { // men and women
       float val = getLerpVal(getCol(j, emotions[i]));
       totalV += val;
-      val = map(val, limits[curVid][0], limits[curVid][1], 0, 1);
-      val = constrain(val, 0, 1);
+      val = map(val, emoLimits[curVid][0], emoLimits[curVid][1], 0, 1);
       
-
       fill(genderC[j]);
       float h = maxH*val;
       rect(x, y-h, w, h);
@@ -66,7 +64,7 @@ void drawGraph() {
     stroke(genderC[j]);
     float cX = x0;
     float val = getLerpVal(getCol(j, "Engagement"));
-    val = map(val, limits[curVid][0], limits[curVid][1], 0, 1);
+    val = map(val, engageLimits[curVid][0], engageLimits[curVid][1], 0, 1);
     float cY = y0 - graphHeight*val;
     if (zoomGraph) {
       cX += (clips[curVid].time()-start)*graphWidth/secs;
@@ -108,7 +106,7 @@ void drawGraphBuffer() {
     for (int i=0; i<= numRows; i++) {
       float x = i*totalW/numRows;
       float val = datas[curVid].getFloat(min(i, numRows-1), getCol(j, "Engagement"));
-      val = map(val, limits[curVid][0], limits[curVid][1], 0, 1);
+      val = map(val, engageLimits[curVid][0], engageLimits[curVid][1], 0, 1);
       float y = graphHeight*(1-val);
       graphBuffer.curveVertex(x, y);
       if (i == numRows) {
