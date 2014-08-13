@@ -73,7 +73,7 @@ float getLerpVal(int col) {
 // uses data in csv to lerp inbetween values
 float getLerpVal(int col, float start) {
   
-  int t = floor(start);
+  int t = max(floor(start), 0);
   if (t >= datas[curVid].getRowCount()) {
     t = datas[curVid].getRowCount()-1;
   }

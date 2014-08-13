@@ -117,7 +117,7 @@ void draw() {
   drawGraph();
   drawExtras();
 
-  drawGrid();
+  //drawGrid();
 
   if (clips[curVid].time() == clips[curVid].duration()) { 
     curVid = floor(random(clips.length));
